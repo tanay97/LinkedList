@@ -11,103 +11,47 @@ struct Node {
 	struct Node* next;
 };
 
-Node* head  = NULL;
-
-bool enqueue(const int index){
-
-	Node* temp1 = new Node();
-	temp1->data = index;
-	temp1->next = NULL;
-	
-	if (head == NULL){
-		temp1->next = NULL;
-		head = temp1;
-		return 1;
-	}
-	Node* temp2 = head; 
-	
-	if( index < temp2->data){
-		temp1->next = head;
-		head = temp1;
-		return 1;
-	}
-	
-	for(int i = 0; index >= temp2->data; i++){
+class Linkedlist{
+	private:
+		int length = 0;
+		Node* head = NULL;
 		
-		if(temp2->next == NULL){
-			temp1->next = NULL;
-			temp2->next = temp1;
-			return 1;
-		}
-		if (temp2->next->data > index){
-			break;
-		}
-		else{
-			temp2 = temp2->next;
-		}
-	}
-	temp1->next = temp2->next;
-	temp2->next = temp1;
-	
-	
-	return 1;
-}
-
-const int dequeue(){
-	
-	Node* temp1 = new Node();
-	if(head == NULL){
-		return 0;
-	}
-	else{
-		temp1 = head;
-		head = temp1->next;
-		return temp1->data;
-	}
-}
-
-Node* findNodeat(int index){
-	
-	Node* runner = new Node();
-	runner = head;
-	
-	if (runner == NULL){
-		return NULL;
-	}
-	
-	
-	for (int i=0; i < index; i++){
+	public:
+		int* getLength(void);
+		Linkedlist();
+		Node* getHead(void);
+		int getDataAtHead(void);
+		void addNode(int data);
+		void removeNode(int index);
+		Node* findNodeAt(int index);
+		void print(void);
+		void sortAscending(void);
+		void sortDescending(void);
 		
-		if(runner == NULL){
-			cout<<"end";
-			return NULL;
-		}
-		runner = runner->next;
-	}
-	
-	return runner;
-}
-/*
-void queue(int data){
-	
-	Node* node = new Node();
-	node-> data = data;
-	
-	Node* temp = new Node();
-	node->next = findNodeat(index);
-	if (index > 0){
-		temp = findNodeat(index-1);
-		temp->next = node;
-	}
-}*/
+};
 
-void print(){
+Linkedlist::Linkedlist(void){
+	cout<<"linkedlist created"<<endl;
+}
+
+int* Linkedlist::getLength(void){
+	return  &length;
+}
+
+Node* Linkedlist::getHead(void){
+	return head;
+}
+
+int Linkedlist::getDataAtHead(void){
+	return head->data;
+}
+
+void Linkedlist::print(void){
 	Node* node = new Node();
-	node = head;
+	node = getHead();
 	cout<<endl;
 	for(int i = 0; node != 0; i++){
 		cout<<"Position "<<i<<" contains " << node->data<<endl;
-		//cout<<i<<endl;
 		node = node->next;
 		if (node == NULL){
 			return;
@@ -115,79 +59,140 @@ void print(){
 
 	}
 }
-
-bool queue(int data){
-	
+void Linkedlist::addNode(int data){
 	Node* node = new Node();
 	node->data = data;
 	node->next = head;
 	head = node;
 	
 	cout<<"Node "<< data << " added to the queue."<<endl;
-	
+	int* length = getLength();
+	*length += 1;
+	cout<<*length;
 	print();
+}
+
+void Linkedlist::removeNode(int index){
+	Node* node = new Node();
+	node = head;
+	Node* temp = new Node();
+	temp = head;
+	for(int i = 0; i < index; i ++){
+		node = node->next;
+	}
+	for(int j = 0; j < index+1; j++){
+		temp = temp->next;
+	}
+	node->next = temp->next;
+	temp = NULL;
 	
-	return 1;
+}
+
+Node* Linkedlist::findNodeAt(int index){
+	
+	
+	Node* runner = new Node();
+	runner = getHead();
+	int* length = getLength();
+	int l = *length;
+	if(index+1>l){
+		
+		return NULL;
+	}
+
+	if (runner == NULL){
+		return NULL;
+	}
+	
+	for (int i=0; i < index; i++){
+		
+		runner = runner->next;
+	}
+	
+	return runner;
+	
+}
+void Linkedlist::sortAscending(void){
+	
+
+	
 }
 
 int main(){
 	
-	int input;
-	
-	cout<< "Enter number of nodes: ";
-	cin>> input;
-	
-	int count = 0;
-	
-	while(count < input){
-		int data;
-		data = rand()%100 + 1;
-		if (!enqueue(data)) {
-			cerr << "Error: unable to enqueue.  Exiting" << endl;
-			exit(-1);
-		}
-		cout<<data<<endl;
-		count++;
-	}
-	
-	cout<<endl<<"dequeueing..."<<endl;
-	int currentdata = head->data;
-	while(currentdata != 0){
-		currentdata = dequeue();
-		cout<<currentdata<<endl;
-	}
+	Linkedlist list;
 	
 	bool done = false;
+
 	int data;
 	
 	while(!done){
 	
 		cout<<"Enter -1 to end queueing."<<endl<<"Enter data of node: ";
-		cin>>data;
+		while(!(cin >> data)){
+			cout << "Bad value!"<<endl;
+			cin.clear();
+			cin.ignore();
+		}
 		if(data == -1){
 			done = true;
 			continue;
 		}
-		queue(data);
+		list.addNode(data);
 		cout<<endl;
 		
 	}
 	done = false;
+	
 	int index;
 	cout<<endl<<endl;
 	while(!done){
 		
 		cout<<"Enter -1 to end index search."<<endl<<"Enter index of node: ";
-		cin>>index;
+		while(!(cin >> index)){
+			cout << "Bad value!"<<endl;
+			cin.clear();
+			cin.ignore();
+		}
 		if(index == -1){
 			done = true;
 			continue;
 		}
 		Node* node = new Node();
-		node = findNodeat(index);
-		cout<<endl<<"Node at index " <<index<<" contains data - "<<node->data<<endl<<endl;
-		
+		if (list.findNodeAt(index) != NULL){
+			node = list.findNodeAt(index);
+			cout<<endl<<"Node at index " <<index<<" contains data - "<<node->data<<endl<<endl;
+		}
+		else{
+			cerr<< "Error: Index out of range"<<endl<<endl;
+		}
 	}
+	done = false;
+	
+	while(!done){
+		
+		cout<<"Enter -1 to end node remove."<<endl<<"Enter index of node to remove: ";
+		while(!(cin >> index)){
+			cout << "Bad value!"<<endl;
+			cin.clear();
+			cin.ignore();
+		}
+		
+		if(index == -1){
+			done = true;
+			continue;
+		}
+		Node* node = new Node();
+		if (list.findNodeAt(index) != NULL){
+			list.removeNode(index);
+			cout<<endl<<"Node at index " <<index<<" contains data - "<<node->data<<endl<<endl;
+		}
+		else{
+			cerr<< "Error: Index out of range"<<endl<<endl;
+		}
+	}
+	
+	list.print();
 	
 	return 1;
 
